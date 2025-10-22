@@ -1,0 +1,12 @@
+name: CI de nuestra app
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Hola Mundo"
