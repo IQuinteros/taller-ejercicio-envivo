@@ -17,7 +17,8 @@ app.get('/todos/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const todo = todos.find(t => t.id === id);
 
-  return "2";
+  res.status(500).json({ error: 'Internal Server Error' });
+  return;
   
   if (!todo) {
     return res.status(404).json({ error: 'Todo not found' });
