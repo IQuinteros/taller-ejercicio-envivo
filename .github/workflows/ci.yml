@@ -10,3 +10,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - run: echo "Hola Mundo"
+
+            - name: Listar archivos
+              run: ls -la
