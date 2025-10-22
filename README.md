@@ -1,3 +1,5 @@
+[![CI de nuestra app](https://github.com/IQuinteros/taller-ejercicio-envivo/actions/workflows/ci.yml/badge.svg)](https://github.com/IQuinteros/taller-ejercicio-envivo/actions/workflows/ci.yml)
+
 # taller-cicd-example
 
 A simple TODO REST API built with Express.js, featuring comprehensive unit tests and CI/CD automation.
