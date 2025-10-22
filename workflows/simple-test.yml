@@ -1,0 +1,95 @@
+# 1. NOMBRE DEL WORKFLOW (aparece en la pestaña Actions de GitHub)
+name: Simple Learning Test
+
+# 2. EVENTOS QUE DISPARAN EL WORKFLOW
+on:
+  # Se ejecuta cuando haces push a cualquier rama
+  push:
+  # Se ejecuta cuando abres/actualizas un pull request
+  pull_request:
+  # Se ejecuta manualmente desde la interfaz de GitHub (botón "Run workflow")
+  workflow_dispatch:
+
+# 3. TRABAJOS (JOBS) - Pueden ejecutarse en paralelo o secuencialmente
+jobs:
+  # Nombre del primer job
+  basic-test:
+    # Sistema operativo donde se ejecuta (ubuntu-latest, windows-latest, macos-latest)
+    runs-on: ubuntu-latest
+    
+    # PASOS DEL JOB (se ejecutan secuencialmente)
+    steps:
+      # Paso 1: Descargar el código del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # Paso 2: Mostrar información del sistema
+      - name: Show system info
+        run: |
+          echo "🐧 Sistema operativo: $(uname -a)"
+          echo "📁 Directorio actual: $(pwd)"
+          echo "📋 Archivos en el repo:"
+          ls -la
+      
+      # Paso 3: Configurar Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Versión específica de Node.js
+          node-version: '20.x'
+          # Habilitar cache de npm para acelerar builds
+          cache: 'npm'
+      
+      # Paso 4: Mostrar versiones instaladas
+      - name: Show versions
+        run: |
+          echo "Node.js version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+      
+      # Paso 5: Instalar dependencias
+      - name: Install dependencies
+        run: npm install
+      
+      # Paso 6: Ejecutar tests
+      - name: Run tests
+        run: npm test
+      
+      # Paso 7: Mostrar mensaje de éxito
+      - name: Success message
+        run: |
+          echo "🎉 ¡Workflow completado exitosamente!"
+          echo "✨ Aprendiste la sintaxis básica de GitHub Actions"
+
+  # SEGUNDO JOB (se ejecuta en paralelo con el anterior)
+  environment-test:
+    # Este job se ejecuta en un OS diferente
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Ejemplo de variables de entorno
+      - name: Environment variables example
+        env:
+          # Variable personalizada
+          MY_VARIABLE: "Hola desde Windows"
+          # Variable usando contexto de GitHub
+          REPO_NAME: ${{ github.repository }}
+        run: |
+          echo "Variable personalizada: $env:MY_VARIABLE"
+          echo "Nombre del repositorio: $env:REPO_NAME"
+          echo "Actor que ejecutó: ${{ github.actor }}"
+          echo "Evento que disparó: ${{ github.event_name }}"
+
+  # TERCER JOB (depende de que el primero termine exitosamente)
+  dependent-job:
+    runs-on: ubuntu-latest
+    # 🔗 Este job espera a que 'basic-test' termine antes de ejecutarse
+    needs: basic-test
+    
+    steps:
+      - name: Dependent job example
+        run: |
+          echo "Este job se ejecuta DESPUÉS de basic-test"
+          echo "Útil para deployments o notificaciones"
